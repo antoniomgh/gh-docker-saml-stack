@@ -20,6 +20,34 @@
             <Rule xsi:type="Requester" value="http://secaas-labs-poc-01.org/sp/simplesamlphp"/>
         </PolicyRequirementRule>
 
+        <AttributeRule attributeID="customAttributeFixedValue">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="customAttributeListFixedValue">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="idCustomAttrFixedStatic">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="idCustomListAttrFixedStatic">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="employeeType">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="roles">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="rolesRaw">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
         <AttributeRule attributeID="uid">
             <PermitValueRule xsi:type="ANY"/>
         </AttributeRule>
@@ -40,6 +68,17 @@
             <PermitValueRule xsi:type="ANY"/>
         </AttributeRule>
 
+        <AttributeRule attributeID="displayName">
+            <PermitValueRule xsi:type="ANY"/>
+        </AttributeRule>
+
+        <AttributeRule attributeID="homePhone">
+            <PermitValueRule xsi:type="ANY"/>
+        </AttributeRule>
+
+        <AttributeRule attributeID="telephoneNumber">
+            <PermitValueRule xsi:type="ANY"/>
+        </AttributeRule>
     </AttributeFilterPolicy>
 
 </AttributeFilterPolicyGroup>

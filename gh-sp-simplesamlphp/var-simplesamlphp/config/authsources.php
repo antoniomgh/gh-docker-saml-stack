@@ -15,12 +15,63 @@ $config = array(
     // and Shibboleth 1.3 IdPs.
     'default-sp' => array(
         'saml:SP',
-        'privatekey' => '/run/secrets/ssp_key',
-        'certificate' => 'server.crt',
+        'certificate' => '/run/secrets/sp_simple_cert',
+        'privatekey' => '/run/secrets/sp_simple_key',
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
         'entityID' => 'http://secaas-labs-poc-01.org/sp/simplesamlphp',
+
+        'redirect.sign' => true,
+        'redirect.validate' => true,
+        'WantAssertionsSigned' => true,
+        'ProtocolBinding' => "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        'acs.Bindings' => array(
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        ),
+
+        /*-- NameID --
+        ---*/
+        'NameIDFormat' => ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
+        'NameIDPolicy' => [
+            'Format' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+            'AllowCreate' => true,
+        ],
+
+        'AssertionConsumerService' => [
+            [
+                'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+                'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp',
+                'index' => 0,
+            ],
+            [
+                'Binding' => 'urn:oasis:names:tc:SAML:1.0:profiles:browser-post',
+                'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp',
+                'index' => 1,
+            ],
+            [
+                'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact',
+                'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp',
+                'index' => 2,
+            ],
+            [
+                'Binding' => 'urn:oasis:names:tc:SAML:1.0:profiles:artifact-01',
+                'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp/artifact',
+                'index' => 3,
+            ],
+        ],
+        'SingleLogoutServiceBinding' => ['urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'],
+        'SingleLogoutServiceLocation' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp',
+        'contacts' => [
+            [
+                'contactType' => 'technical',
+                'emailAddress' => 'servicedesk.ans.next.es@bbva.es',
+                'surName' => 'Service Desk',
+                'givenName' => 'Tech',
+                'telephoneNumber' => '+34 666787909',
+                'company' => 'BBVA SecaaS',
+            ]
+        ],
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
@@ -64,7 +115,6 @@ $config = array(
             'urn:oid:x.x.x.x',
         ),*/
     ),
-
 
     /*
     'example-sql' => array(
@@ -423,7 +473,8 @@ $config = array(
         // Which attributes should be retrieved from the LDAP server.
         // This can be an array of attribute names, or NULL, in which case
         // all attributes are fetched.
-        'attributes' => array('cn', 'givenName', 'mail', 'sn'),
+        # 'attributes' => array('cn', 'givenName', 'mail', 'sn'),
+        'attributes' => array('cn', 'uid', 'mail', 'homePhone', 'sn', 'telephoneNumber', 'givenName', 'displayName', 'eduPersonPrincipalName'),
 
         // The pattern which should be used to create the users DN given the username.
         // %username% in this pattern will be replaced with the users username.

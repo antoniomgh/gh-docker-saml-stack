@@ -11,7 +11,7 @@ services:
 
   idp:
     container_name: idp
-    build: ./idp/
+    build: ./gh-idp-shibboleth-3.4/
     depends_on:
       - ldap
     environment:
@@ -71,7 +71,8 @@ services:
     networks:
       - back
     secrets:
-      - source: ssp_key
+      - source: sp_simple_cert
+      - source: sp_simple_key
 
   php-cas:
     container_name: php-cas
@@ -102,3 +103,8 @@ secrets:
     file: ./secrets/simplesamlphp/server.pem
   sp_key:
     file: ./secrets/sp/sp-key.pem
+
+  sp_simple_cert:
+    file: ./secrets/s01/sp_simple/sp-certificate.pem
+  sp_simple_key:
+    file: ./secrets/s01/sp_simple/sp-privatekey.pem

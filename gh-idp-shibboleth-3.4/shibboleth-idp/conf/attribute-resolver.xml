@@ -29,6 +29,78 @@
     <!--      Attribute Definitions                 -->
     <!-- ========================================== -->
 
+    <!-- https://shibboleth.atlassian.net/wiki/spaces/IDP30/pages/2489680004/ScriptedAttributeDefinition -->
+    <resolver:AttributeDefinition id="customAttributeFixedValue" xsi:type="ad:Script">
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="ghCustomAttributeFixedValueName" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="ghCustomAttributeFixedValueName" friendlyName="customAttributeFixedValue" encodeType="false" />
+        <ad:Script>
+            <![CDATA[
+                logger = Java.type("org.slf4j.LoggerFactory").getLogger("net.shibboleth.idp.attribute");
+                logger.info("[xxxxx][a] Before adding value to customAttributeFixedValue");
+                customAttributeFixedValue.addValue("myStaticValue");
+                logger.info("[xxxxx][a] After adding value to customAttributeFixedValue, current values: " + customAttributeFixedValue.getValues());
+            ]]>
+        </ad:Script>
+    </resolver:AttributeDefinition>
+
+    <!-- https://shibboleth.atlassian.net/wiki/spaces/IDP30/pages/2489680004/ScriptedAttributeDefinition -->
+    <resolver:AttributeDefinition id="customAttributeListFixedValue" xsi:type="ad:Script">
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="ghCustomAttributeListFixedValueName" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="ghCustomAttributeListFixedValueName" friendlyName="customAttributeListFixedValue" encodeType="false" />
+        <ad:Script>
+            <!--
+            Inline ECMAScript (JavaScript) - Otra opción que requiera más complejidad se realizaría con un ScriptedDataConnector
+            -->
+            <![CDATA[
+                logger = Java.type("org.slf4j.LoggerFactory").getLogger("net.shibboleth.idp.attribute");
+                var StringAttributeValue = Java.type("net.shibboleth.idp.attribute.StringAttributeValue");
+                logger.info("[xxxxx][b] Before adding value to customAttributeListFixedValue");
+                customAttributeListFixedValue.addValue(new StringAttributeValue("myStaticValueItemStringAttributeValue"));
+                customAttributeListFixedValue.addValue("myStaticValueItem1");
+                customAttributeListFixedValue.addValue("myStaticValueItem2");
+                customAttributeListFixedValue.addValue("myStaticValueItem3");
+                customAttributeListFixedValue.addValue("myStaticValueItem4");
+                customAttributeListFixedValue.addValue(new StringAttributeValue("myStaticValueItemStringAttributeValueBis"));
+                logger.info("[xxxxx][b] After adding value to customAttributeListFixedValue, current values: " + customAttributeListFixedValue.getValues());
+            ]]>
+        </ad:Script>
+    </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="idCustomAttrFixedStatic" sourceAttributeID="sourceIdCustomAttributeFixedStatic">
+        <resolver:Dependency ref="ghDataConnectorStaticAttributes" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="idCustomAttrFixedStaticSaml1" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="idCustomAttrFixedStaticSaml2" friendlyName="fnIdCustomAttrFixedStatic" encodeType="false" />
+    </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="idCustomListAttrFixedStatic" sourceAttributeID="sourceIdCustomListAttributeFixedStatic">
+        <resolver:Dependency ref="ghDataConnectorStaticAttributes" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="idCustomListAttrFixedStaticSaml1" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="idCustomListAttrFixedStaticSaml2" friendlyName="fnIdCustomListAttrFixedStatic" encodeType="false" />
+    </resolver:AttributeDefinition>
+
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="employeeType" sourceAttributeID="employeeType">
+        <resolver:Dependency ref="myLDAP" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:employeeType" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:2.16.840.1.113730.3.1.4" friendlyName="employeeType" encodeType="false" />
+    </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Mapped" sourceAttributeID="memberOf" id="roles">
+        <resolver:Dependency ref="myLDAP" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:roles" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:1.3.6.1.4.1.5923.1.1.1.1" friendlyName="roles" encodeType="false" />
+        <ad:ValueMap>
+            <ad:ReturnValue>$1</ad:ReturnValue>
+            <ad:SourceValue ignoreCase="true">^cn=([^,]+),.*$</ad:SourceValue>
+        </ad:ValueMap>
+    </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" sourceAttributeID="memberOf" id="ghRolesRaw">
+        <resolver:Dependency ref="myLDAP" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="ghRolesRawName" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="ghRolesRawName" friendlyName="ghRolesRaw" encodeType="false" />
+    </resolver:AttributeDefinition>
+
     <!-- Schema: Core schema attributes-->
     <resolver:AttributeDefinition xsi:type="ad:Simple" id="uid" sourceAttributeID="uid">
         <resolver:Dependency ref="myLDAP"/>
@@ -39,10 +111,16 @@
 
     <resolver:AttributeDefinition xsi:type="ad:Simple" id="mail" sourceAttributeID="mail">
         <resolver:Dependency ref="myLDAP"/>
-        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:mail"
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:mail"  encodeType="false"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:0.9.2342.19200300.100.1.3" friendlyName="mail" encodeType="false"/>
+    </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="homePhone" sourceAttributeID="homePhone">
+        <resolver:Dependency ref="myLDAP"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:homePhone"
                                    encodeType="false"/>
-        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:0.9.2342.19200300.100.1.3"
-                                   friendlyName="mail" encodeType="false"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:0.9.2342.19200300.100.1.20"
+                                   friendlyName="homePhone" encodeType="false"/>
     </resolver:AttributeDefinition>
     <!--
         <resolver:AttributeDefinition xsi:type="ad:Simple" id="homePhone" sourceAttributeID="homePhone">
@@ -75,6 +153,15 @@
         <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:2.5.4.4" friendlyName="sn"
                                    encodeType="false"/>
     </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="telephoneNumber" sourceAttributeID="telephoneNumber">
+        <resolver:Dependency ref="myLDAP"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:telephoneNumber"
+                                   encodeType="false"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:2.5.4.20" friendlyName="telephoneNumber"
+                                   encodeType="false"/>
+    </resolver:AttributeDefinition>
+
     <!--
         <resolver:AttributeDefinition xsi:type="ad:Simple" id="locality" sourceAttributeID="l">
             <resolver:Dependency ref="myLDAP" />
@@ -152,6 +239,13 @@
          -->
 
     <!-- Schema: inetOrgPerson attributes-->
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="displayName" sourceAttributeID="displayName">
+        <resolver:Dependency ref="myLDAP"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:mace:dir:attribute-def:displayName"
+                                   encodeType="false"/>
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:oid:2.16.840.1.113730.3.1.241"
+                                   friendlyName="displayName" encodeType="false"/>
+    </resolver:AttributeDefinition>
     <!--
     <resolver:AttributeDefinition xsi:type="ad:Simple" id="departmentNumber" sourceAttributeID="departmentNumber">
         <resolver:Dependency ref="myLDAP" />
@@ -255,13 +349,16 @@
     <!-- ========================================== -->
 
     <!-- Example Static Connector -->
-    <!--
-    <resolver:DataConnector id="staticAttributes" xsi:type="dc:Static">
-        <dc:Attribute id="eduPersonAffiliation">
-            <dc:Value>member</dc:Value>
+    <resolver:DataConnector id="ghDataConnectorStaticAttributes" xsi:type="dc:Static">
+        <dc:Attribute id="sourceIdCustomAttributeFixedStatic">
+            <dc:Value>valueCustomAttributeFixedStatic</dc:Value>
+        </dc:Attribute>
+        <dc:Attribute id="sourceIdCustomListAttributeFixedStatic">
+            <dc:Value>valueCustomAttrFixedStatic1</dc:Value>
+            <dc:Value>valueCustomAttrFixedStatic2</dc:Value>
+            <dc:Value>valueCustomAttrFixedStatic3</dc:Value>
         </dc:Attribute>
     </resolver:DataConnector>
-    -->
 
     <!-- Example Relational Database Connector -->
     <!--
@@ -292,6 +389,20 @@
                 %{idp.attribute.resolver.LDAP.searchFilter}
             ]]>
         </dc:FilterTemplate>
+
+        <!-- Hay que indicar explicitamente memberOf al ser un atributo operacional -->
+        <dc:ReturnAttributes>* memberOf</dc:ReturnAttributes>
+
+        <!--
+        El comodín + sirve para solicitar todos los atributos operacionales del sistema: entryUUID, createTimestamp, ...
+        Después de incluirlo en attribute-filter y attribute-resolver también se devolverían.
+        <dc:ReturnAttributes>* +</dc:ReturnAttributes>
+        -->
+
+        <!--
+        <dc:ReturnAttributes>cn sn displayName givenName mail uid mobile homePhone telephoneNumber employeeType homePhone memberOf</dc:ReturnAttributes>
+        -->
+
         <!--
         <dc:StartTLSTrustCredential id="LDAPtoIdPCredential" xsi:type="sec:X509ResourceBacked">
             <sec:Certificate>%{idp.attribute.resolver.LDAP.trustCertificates}</sec:Certificate>

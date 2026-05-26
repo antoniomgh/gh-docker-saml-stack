@@ -1,4 +1,4 @@
-FROM unicon/shibboleth-idp:latest
+FROM unicon/shibboleth-idp:3.4.3
 MAINTAINER Unicon, Inc.
 
 # https://dev.to/franzwong/fix-cannot-find-a-valid-baseurl-for-repo-in-centos-1h07

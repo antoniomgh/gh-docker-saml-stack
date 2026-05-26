@@ -11,12 +11,12 @@ services:
 
   idp:
     container_name: idp
-    build: ./idp/
+    build: ./gh-idp-shibboleth-3.4/
     depends_on:
       ldap:
         condition: service_healthy
     environment:
-      - JETTY_MAX_HEAP=64m
+      - JETTY_MAX_HEAP=128m
       - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
       - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
     expose:
@@ -26,15 +26,17 @@ services:
     secrets:
       - source: idp_backchannel
       - source: idp_browser
-      - source: idp_encryption
-      - source: idp_signing
       - source: idp_sealer
+      - source: idp_encryption_cert
+      - source: idp_encryption_key
+      - source: idp_signing_cert
+      - source: idp_signing_key
 
   ldap:
     image: osixia/openldap:1.5.0
     container_name: ldap
     environment:
-      LDAP_BASE_DN: "ou=people,dc=idptestbed,dc=localhost"
+      LDAP_BASE_DN: "dc=idptestbed,dc=localhost"
       LDAP_ORGANISATION: "Example Organization"
       LDAP_DOMAIN: "idptestbed.localhost"
       LDAP_ADMIN_PASSWORD: "password"
@@ -107,7 +109,8 @@ services:
     networks:
       - back
     secrets:
-      - source: ssp_key
+      - source: sp_simple_cert
+      - source: sp_simple_key
 
   php-cas:
     container_name: php-cas
@@ -128,13 +131,27 @@ secrets:
     file: ./secrets/idp/idp-backchannel.p12
   idp_browser:
     file: ./secrets/idp/idp-browser.p12
-  idp_encryption:
-    file: ./secrets/idp/idp-encryption.key
-  idp_signing:
-    file: ./secrets/idp/idp-signing.key
+  #idp_encryption:
+  #  file: ./secrets/idp/idp-encryption.key
+  #idp_signing:
+  #  file: ./secrets/idp/idp-signing.key
   idp_sealer:
     file: ./secrets/idp/sealer.jks
   ssp_key:
     file: ./secrets/simplesamlphp/server.pem
   sp_key:
     file: ./secrets/sp/sp-key.pem
+
+  idp_encryption_cert:
+    file: ./secrets/s01/idp/idp-encryption-cert.pem
+  idp_encryption_key:
+    file: ./secrets/s01/idp/idp-encryption-key.pem
+  idp_signing_cert:
+    file: ./secrets/s01/idp/idp-signing-cert.pem
+  idp_signing_key:
+    file: ./secrets/s01/idp/idp-signing-key.pem
+
+  sp_simple_cert:
+    file: ./secrets/s01/sp_simple/sp-certificate.pem
+  sp_simple_key:
+    file: ./secrets/s01/sp_simple/sp-privatekey.pem

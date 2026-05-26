@@ -51,6 +51,19 @@
     <!-- Container for any overrides you want to add. -->
 
     <util:list id="shibboleth.RelyingPartyOverrides">
+
+        <!-- para que no nos encripte los datos y los podamos ver en el log de SAMLTracer -->
+        <bean parent="RelyingPartyByName" c:relyingPartyIds="http://secaas-labs-poc-01.org/sp/simplesamlphp">
+            <property name="profileConfigurations">
+                <list>
+                    <bean parent="SAML2.SSO" p:encryptAssertions="false" />
+                    <!--
+                    <bean parent="SAML2.SSO" p:encryptAssertions="false"  p:encryptNameIDs="false" p:encryptAttributes="false" />
+                    -->
+                </list>
+            </property>
+        </bean>
+
         <bean parent="RelyingPartyByName" c:relyingPartyIds="https://sp.ccc.local/shibboleth">
             <property name="profileConfigurations">
                 <list>

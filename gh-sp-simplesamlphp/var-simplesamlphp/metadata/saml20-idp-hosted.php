@@ -14,9 +14,10 @@ $metadata['https://secaas-labs-poc-01.org/idp/simplesamlphp'] = array(
 	'host' => 'idptestbed.localhost',
 
 	// X.509 key and certificate. Relative to the cert directory.
-	'privatekey' => '/run/secrets/ssp_key',
-	'certificate' => 'server.crt',
-
+	# TODO 'privatekey' => '/run/secrets/ssp_key',
+	# TODO 'certificate' => 'server.crt',
+    'certificate' => '/run/secrets/sp_simple_cert',
+    'privatekey' => '/run/secrets/sp_simple_key',
 	/*
 	 * Authentication source to use. Must be one that is configured in
 	 * 'config/authsources.php'.

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                     entityID="http://secaas-labs-poc-01.org/sp/simplesamlphp">
+    <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="true"
+                        WantAssertionsSigned="true">
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>
+                        MIIDrTCCApSgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBwMQswCQYDVQQGEwJlczEVMBMGA1UECAwMU2VjYWFTIFN0YXRlMRwwGgYDVQQKDBNTZWNhYVMgT3JnYW5pemF0aW9uMRYwFAYDVQQDDA1TZWNhYVMgRG9tYWluMRQwEgYDVQQLDAtTZWNhYVMgTGFiczAeFw0yNjA1MTkxOTQyNTlaFw0zMDA1MTgxOTQyNTlaMHAxCzAJBgNVBAYTAmVzMRUwEwYDVQQIDAxTZWNhYVMgU3RhdGUxHDAaBgNVBAoME1NlY2FhUyBPcmdhbml6YXRpb24xFjAUBgNVBAMMDVNlY2FhUyBEb21haW4xFDASBgNVBAsMC1NlY2FhUyBMYWJzMIIBIzANBgkqhkiG9w0BAQEFAAOCARAAMIIBCwKCAQIA2lRFtdxMbQZxOwo5QbqaQAZ1+848I/+R79xoUsel6bzXM6p2T4TVndrr0Vm2xq7SfMLFmVUq3jMQPgPplWnOILni2+/2bmxnbEVZyFIRL4y/t5zbdPhuW8Qq9EEdW9RkGslWFLS2lgWS+CfdkK0IgHFgsQyN6TvfpmlfbFkrYV4cFlyagIGPXU/4u+nCHOagjtZVMUEBY1fuaKecbuZEHHlfFM2ghVT44xoUKTSPyq/REgS6Gk1c/NuXAPQPBKlC/8L8WuiJgvq9J53osvWOC977fxKtVREFkHlewlN6LTC8M+BQKWON77DuzPELSZz1xtiCbhv7tQr6qZItnuOhydUCAwEAAaNQME4wHQYDVR0OBBYEFABCdjtIRGi0AF0Uti7p+FXPdfegMB8GA1UdIwQYMBaAFABCdjtIRGi0AF0Uti7p+FXPdfegMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQENBQADggECAAYbJbguzm9fHF1muKFy+bCMRP2dscl7GDO9hJdQILkgPNCBMA2JjimWAMYp2kbLVgR+OVRgYZXIe6N6xbpxI16ANf89U47JEnNJqQndF+N3WrOB9Tm7uOo6Ub8FB4aYGY/X69Ncp6vxLic8awBEGlvNHBwZ4Ks0MXEJeIKBYLHQQAvbBr5k6yRwmC3xFBNsYu+fl9lsg4+aHlUEKYXou+MzA8/QrpxWmC8UUVVUSc2AkHzZtSJuFfPcNFH9QTTo4/WAY3RvLPj0vUvhkcakps0Qz6Ar0ge2G63I+63U3Pev1tYJpw8Ye2ANGm0aYpi/EWPwpFq/oWDfj78sKHngRb6G
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:KeyDescriptor use="encryption">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>
+                        MIIDrTCCApSgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBwMQswCQYDVQQGEwJlczEVMBMGA1UECAwMU2VjYWFTIFN0YXRlMRwwGgYDVQQKDBNTZWNhYVMgT3JnYW5pemF0aW9uMRYwFAYDVQQDDA1TZWNhYVMgRG9tYWluMRQwEgYDVQQLDAtTZWNhYVMgTGFiczAeFw0yNjA1MTkxOTQyNTlaFw0zMDA1MTgxOTQyNTlaMHAxCzAJBgNVBAYTAmVzMRUwEwYDVQQIDAxTZWNhYVMgU3RhdGUxHDAaBgNVBAoME1NlY2FhUyBPcmdhbml6YXRpb24xFjAUBgNVBAMMDVNlY2FhUyBEb21haW4xFDASBgNVBAsMC1NlY2FhUyBMYWJzMIIBIzANBgkqhkiG9w0BAQEFAAOCARAAMIIBCwKCAQIA2lRFtdxMbQZxOwo5QbqaQAZ1+848I/+R79xoUsel6bzXM6p2T4TVndrr0Vm2xq7SfMLFmVUq3jMQPgPplWnOILni2+/2bmxnbEVZyFIRL4y/t5zbdPhuW8Qq9EEdW9RkGslWFLS2lgWS+CfdkK0IgHFgsQyN6TvfpmlfbFkrYV4cFlyagIGPXU/4u+nCHOagjtZVMUEBY1fuaKecbuZEHHlfFM2ghVT44xoUKTSPyq/REgS6Gk1c/NuXAPQPBKlC/8L8WuiJgvq9J53osvWOC977fxKtVREFkHlewlN6LTC8M+BQKWON77DuzPELSZz1xtiCbhv7tQr6qZItnuOhydUCAwEAAaNQME4wHQYDVR0OBBYEFABCdjtIRGi0AF0Uti7p+FXPdfegMB8GA1UdIwQYMBaAFABCdjtIRGi0AF0Uti7p+FXPdfegMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQENBQADggECAAYbJbguzm9fHF1muKFy+bCMRP2dscl7GDO9hJdQILkgPNCBMA2JjimWAMYp2kbLVgR+OVRgYZXIe6N6xbpxI16ANf89U47JEnNJqQndF+N3WrOB9Tm7uOo6Ub8FB4aYGY/X69Ncp6vxLic8awBEGlvNHBwZ4Ks0MXEJeIKBYLHQQAvbBr5k6yRwmC3xFBNsYu+fl9lsg4+aHlUEKYXou+MzA8/QrpxWmC8UUVVUSc2AkHzZtSJuFfPcNFH9QTTo4/WAY3RvLPj0vUvhkcakps0Qz6Ar0ge2G63I+63U3Pev1tYJpw8Ye2ANGm0aYpi/EWPwpFq/oWDfj78sKHngRb6G
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp"/>
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
+                                     index="0"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
+                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp"
+                                     index="1"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
+                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
+                                     index="2"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:artifact-01"
+                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp/artifact"
+                                     index="3"/>
+    </md:SPSSODescriptor>
+    <md:ContactPerson contactType="technical">
+        <md:Company>BBVA SecaaS</md:Company>
+        <md:GivenName>Tech</md:GivenName>
+        <md:SurName>Service Desk</md:SurName>
+        <md:EmailAddress>mailto:servicedesk.ans.next.es@bbva.es</md:EmailAddress>
+        <md:TelephoneNumber>+34 666787909</md:TelephoneNumber>
+    </md:ContactPerson>
+</md:EntityDescriptor>

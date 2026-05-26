@@ -116,7 +116,7 @@
         <appender-ref ref="${idp.consent.appender:-IDP_CONSENT_AUDIT}"/>
     </logger>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="${idp.process.appender:-IDP_PROCESS}"/>
         <appender-ref ref="${idp.warn.appender:-IDP_WARN}"/>
     </root>
