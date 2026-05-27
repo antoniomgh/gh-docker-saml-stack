@@ -11,11 +11,12 @@ services:
 
   idp:
     container_name: idp
+    platform: linux/amd64
     build: ./gh-idp-shibboleth-3.4/
     depends_on:
       - ldap
     environment:
-      - JETTY_MAX_HEAP=64m
+      - JETTY_MAX_HEAP=128m
       - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
       - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
     expose:
@@ -25,9 +26,11 @@ services:
     secrets:
       - source: idp_backchannel
       - source: idp_browser
-      - source: idp_encryption
-      - source: idp_signing
       - source: idp_sealer
+      - source: idp_encryption_cert
+      - source: idp_encryption_key
+      - source: idp_signing_cert
+      - source: idp_signing_key
 
   ldap:
     container_name: ldap
@@ -48,6 +51,8 @@ services:
       context: ./gh-saml-sp-simplesamlphp/
       dockerfile: Dockerfile
     image: gh/saml-sp-simplesamlphp:latest
+    depends_on:
+      - gh-saml-sp-shibboleth
     profiles:
       - builder # Evita que se levante al hacer 'up'
 
@@ -59,7 +64,8 @@ services:
     networks:
       - back
     secrets:
-      - source: sp_key
+      - source: sp_shibboleth_cert
+      - source: sp_shibboleth_key
 
   simplesamlphp:
     container_name: simplesamlphp
@@ -89,22 +95,27 @@ networks:
     driver: bridge
 
 secrets:
+  idp_encryption_cert:
+    file: ./secrets/idp/idp-encryption-cert.pem
+  idp_encryption_key:
+    file: ./secrets/idp/idp-encryption-key.pem
+  idp_signing_cert:
+    file: ./secrets/idp/idp-signing-cert.pem
+  idp_signing_key:
+    file: ./secrets/idp/idp-signing-key.pem
   idp_backchannel:
     file: ./secrets/idp/idp-backchannel.p12
   idp_browser:
     file: ./secrets/idp/idp-browser.p12
-  idp_encryption:
-    file: ./secrets/idp/idp-encryption.key
-  idp_signing:
-    file: ./secrets/idp/idp-signing.key
   idp_sealer:
     file: ./secrets/idp/sealer.jks
-  ssp_key:
-    file: ./secrets/simplesamlphp/server.pem
-  sp_key:
-    file: ./secrets/sp/sp-key.pem
+
+  sp_shibboleth_cert:
+    file: ./secrets/sp_shibboleth/sp-certificate.pem
+  sp_shibboleth_key:
+    file: ./secrets/sp_shibboleth/sp-privatekey.pem
 
   sp_simple_cert:
-    file: ./secrets/s01/sp_simple/sp-certificate.pem
+    file: ./secrets/sp_simple/sp-certificate.pem
   sp_simple_key:
-    file: ./secrets/s01/sp_simple/sp-privatekey.pem
+    file: ./secrets/sp_simple/sp-privatekey.pem
