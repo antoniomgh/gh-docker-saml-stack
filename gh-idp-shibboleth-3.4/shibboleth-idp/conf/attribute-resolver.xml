@@ -78,6 +78,17 @@
         <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="idCustomListAttrFixedStaticSaml2" friendlyName="fnIdCustomListAttrFixedStatic" encodeType="false" />
     </resolver:AttributeDefinition>
 
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="acUsedForLogin" sourceAttributeID="acUsedForLoginSource">
+        <resolver:Dependency ref="ghDataConnectorStaticAttributes" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:nauthilus:attribute-def:authController" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:nauthilus:attribute-def:authController" friendlyName="acUsedForLogin" encodeType="false" />
+    </resolver:AttributeDefinition>
+
+    <resolver:AttributeDefinition xsi:type="ad:Simple" id="spOpenedSessions" sourceAttributeID="spOpenedSessionsSource">
+        <resolver:Dependency ref="ghDataConnectorStaticAttributes" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML1String" name="urn:nauthilus:attribute-def:spOpenedSessions" encodeType="false" />
+        <resolver:AttributeEncoder xsi:type="enc:SAML2String" name="urn:nauthilus:attribute-def:spOpenedSessions" friendlyName="spOpenedSessions" encodeType="false" />
+    </resolver:AttributeDefinition>
 
     <resolver:AttributeDefinition xsi:type="ad:Simple" id="employeeType" sourceAttributeID="employeeType">
         <resolver:Dependency ref="myLDAP" />
@@ -357,6 +368,14 @@
             <dc:Value>valueCustomAttrFixedStatic1</dc:Value>
             <dc:Value>valueCustomAttrFixedStatic2</dc:Value>
             <dc:Value>valueCustomAttrFixedStatic3</dc:Value>
+        </dc:Attribute>
+        <dc:Attribute id="acUsedForLoginSource">
+            <dc:Value>13</dc:Value>
+        </dc:Attribute>
+        <dc:Attribute id="spOpenedSessionsSource">
+            <dc:Value>armadillo.local.ether.armadillo</dc:Value>
+            <dc:Value>onyx.local.armadillo</dc:Value>
+            <dc:Value>giam.work</dc:Value>
         </dc:Attribute>
     </resolver:DataConnector>
 

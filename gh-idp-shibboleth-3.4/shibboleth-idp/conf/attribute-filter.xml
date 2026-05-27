@@ -20,6 +20,14 @@
             <Rule xsi:type="Requester" value="http://secaas-labs-poc-01.org/sp/simplesamlphp"/>
         </PolicyRequirementRule>
 
+        <AttributeRule attributeID="spOpenedSessions">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
+        <AttributeRule attributeID="acUsedForLogin">
+            <PermitValueRule xsi:type="ANY" />
+        </AttributeRule>
+
         <AttributeRule attributeID="customAttributeFixedValue">
             <PermitValueRule xsi:type="ANY" />
         </AttributeRule>
