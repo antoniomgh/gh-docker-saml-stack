@@ -1,3 +1,5 @@
+https://gitlab.software.geant.org/edugain-training/edugain-training/-/blob/training/202604-paris/tutorials/HOWTO-Install-and-Configure-a-Shibboleth-Embedded-Discovery-Service.md
+
 Vamos por: meter los attributos para que se vean en SP Shibboleth
 # Creando certificado para IDP
 

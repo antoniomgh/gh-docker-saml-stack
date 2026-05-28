@@ -94,6 +94,19 @@
               SAML2 SAML1
             </SSO>
 
+            <!--
+            <SSO>
+              SAML2 SAML1
+            </SSO>
+            -->
+
+            <!--
+            /Shibboleth.sso/DiscoFeed
+            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://tu-sp.local/shibboleth-ds/index.html">
+              SAML2 SAML1
+            </SSO>
+            -->
+
             <!-- SAML and local-only logout. -->
             <Logout>SAML2 Local</Logout>
 
@@ -115,7 +128,7 @@
         <MetadataProvider type="XML" validate="true" path="partner-metadata.xml"/>
         -->
 
-        <MetadataProvider type="XML" validate="true" path="idp-metadata.xml"/>
+        <MetadataProvider type="XML" validate="true" path="idp-default-metadata.xml"/>
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
@@ -141,6 +154,15 @@
         <!--
         <ApplicationOverride id="admin" entityID="https://admin.example.org/shibboleth"/>
         -->
+         <ApplicationOverride id="nauthilusPreIdP">
+            <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true" cookieProps="https">
+                <SSO entityID="https://preidp.work.global.platform.bbva.com/idp/metadata">
+                    SAML2 SAML1
+                </SSO>
+                <Logout>SAML2 Local</Logout>
+            </Sessions>
+             <MetadataProvider type="XML" validate="true" path="idp-nauthilus-preidp-metadata.xml"/>
+         </ApplicationOverride>
     </ApplicationDefaults>
 
     <!-- Policies that determine how to process and authenticate runtime messages. -->
