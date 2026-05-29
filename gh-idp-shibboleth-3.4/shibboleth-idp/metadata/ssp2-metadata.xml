@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     entityID="http://secaas-labs-poc-01.org/sps2/simplesamlphp">
+    <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" WantAssertionsSigned="false">
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/simple2-sp"/>
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/simple2-sp"
+                                     index="0"/>
+    </md:SPSSODescriptor>
+</md:EntityDescriptor>

@@ -30,8 +30,6 @@ $config = array(
             "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
         ),
 
-        /*-- NameID --
-        ---*/
         'NameIDFormat' => ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
         'NameIDPolicy' => [
             'Format' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
@@ -114,6 +112,41 @@ $config = array(
         /*'attributes.required' => array (
             'urn:oid:x.x.x.x',
         ),*/
+    ),
+
+    'simple2-sp' => array(
+        'saml:SP',
+        'entityID' => 'http://secaas-labs-poc-01.org/sps2/simplesamlphp',
+        'redirect.validate' => false,
+        'WantAssertionsSigned' => false,
+        'ProtocolBinding' => "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        'acs.Bindings' => array(
+            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+        ),
+
+        'NameIDFormat' => ['urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'],
+        'NameIDPolicy' => [
+            'Format' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+            'AllowCreate' => true,
+        ],
+
+        'AssertionConsumerService' => [
+            [
+                'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+                'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/simple2-sp',
+                'index' => 0,
+            ]
+        ],
+        'SingleLogoutServiceBinding' => ['urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect'],
+        'SingleLogoutServiceLocation' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/simple2-sp',
+
+        // The entity ID of the IdP this should SP should contact.
+        // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
+        'idp' => null,
+
+        // The URL to the discovery service.
+        // Can be NULL/unset, in which case a builtin discovery service will be used.
+        'discoURL' => null,
     ),
 
     /*

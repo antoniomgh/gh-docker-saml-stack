@@ -63,3 +63,21 @@ $metadata['http://secaas-labs-poc-01.org/sp/simplesamlphp'] = [
     'validate.authnrequest' => true,
     'saml20.sign.assertion' => true,
 ];
+
+$metadata['http://secaas-labs-poc-01.org/sps2/simplesamlphp'] = [
+    'SingleLogoutService' => [
+        [
+            'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+            'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/simple2-sp',
+        ],
+    ],
+    'AssertionConsumerService' => [
+        [
+            'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+            'Location' => 'https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/simple2-sp',
+            'index' => 0,
+        ],
+    ],
+    'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+    'saml20.sign.assertion' => false,
+];

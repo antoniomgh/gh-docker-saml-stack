@@ -265,6 +265,38 @@ $config = array(
     'enable.wsfed-sp' => false,
     'enable.authmemcookie' => false,
 
+    /*
+     * Option to override the default settings for the session cookie name
+     * Dale un nombre genérico y seguro a la cookie de sesión de SimpleSAML
+     */
+    'session.cookie.name' => 'SIMPLESAML_SHARED_SESSION',
+
+    /*
+     * Limit the path of the cookies.
+     *
+     * Can be used to limit the path of the cookies to a specific subdirectory.
+     *
+     * Example:
+     *  'session.cookie.path' => '/simplesaml/',
+     *
+     * Deja la ruta apuntando a la raíz del dominio para que sea accesible tanto por /sp1 como por /sp2
+     */
+    'session.cookie.path' => '/',
+
+    /*
+     * Set the secure flag in the cookie.
+     *
+     * Set this to TRUE if the user only accesses your service
+     * through https. If the user can access the service through
+     * both http and https, this must be set to FALSE.
+     *
+     * OBLIGATORIO: Al estar detrás de un proxy HTTPS, asegura la cookie
+     */
+    'session.cookie.secure' => true,
+
+    // 4. Recomendado por seguridad para evitar ataques XSS
+    'session.cookie.httponly' => true,
+    'session.cookie.samesite' => 'Lax',
 
     /*
      * Module enable configuration
@@ -304,11 +336,6 @@ $config = array(
     'session.state.timeout' => (60 * 60), // 1 hour
 
     /*
-     * Option to override the default settings for the session cookie name
-     */
-    'session.cookie.name' => 'SimpleSAMLSessionID',
-
-    /*
      * Expiration time for the session cookie, in seconds.
      *
      * Defaults to 0, which means that the cookie expires when the browser is closed.
@@ -319,16 +346,6 @@ $config = array(
     'session.cookie.lifetime' => 0,
 
     /*
-     * Limit the path of the cookies.
-     *
-     * Can be used to limit the path of the cookies to a specific subdirectory.
-     *
-     * Example:
-     *  'session.cookie.path' => '/simplesaml/',
-     */
-    'session.cookie.path' => '/',
-
-    /*
      * Cookie domain.
      *
      * Can be used to make the session cookie available to several domains.
@@ -337,15 +354,6 @@ $config = array(
      *  'session.cookie.domain' => '.example.org',
      */
     'session.cookie.domain' => null,
-
-    /*
-     * Set the secure flag in the cookie.
-     *
-     * Set this to TRUE if the user only accesses your service
-     * through https. If the user can access the service through
-     * both http and https, this must be set to FALSE.
-     */
-    'session.cookie.secure' => false,
 
     /*
      * Enable secure POST from HTTPS to HTTP.

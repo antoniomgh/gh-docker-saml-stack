@@ -2,7 +2,7 @@
   ini_set('display_errors', 1);
   error_reporting(E_ALL ^ E_NOTICE);
   require_once('/var/simplesamlphp/lib/_autoload.php');
-  $as = new SimpleSAML_Auth_Simple('default-sp');
+  $as = new SimpleSAML_Auth_Simple('simple2-sp');
 
   $as->requireAuth();
 ?>
@@ -10,7 +10,7 @@
 <body>
 	<p><a href="/">Main Menu</a></p>
     <br/>
-    <h1>SAML Auth Info Default</h1>
+    <h1>SAML Auth Info Simple2</h1>
     <pre>
     <?php
         echo '<h2>Auth Data: Attributes</h2>';
