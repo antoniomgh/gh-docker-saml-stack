@@ -1,10 +1,121 @@
+Explicar el problema que comenta GEMINI, es curioso
+Vamos a crearlo como debe de ser....
+/Shibboleth.sso/Login?entityID=https://nauthilus-pre.idp.local/idp/shibboleth&target=/secure/nauthilus
+----
+https://app1.testbed.local/Shibboleth.sso/Metadata?resource=idAppNauthilusPreIdP
+
+con direcciones localhost pero diferentes, de modo que no sea obligado lanzarlos todos juntos.
+
 https://gitlab.software.geant.org/edugain-training/edugain-training/-/blob/training/202604-paris/tutorials/HOWTO-Install-and-Configure-a-Shibboleth-Embedded-Discovery-Service.md
 
 Vamos por: meter los attributos para que se vean en SP Shibboleth
+
+# 2 IDP en Shibboleth SP
+
+Hacerlo por ApplicationId tiene un problema.
+
+### 3. El gran problema del ACS compartido con `ApplicationOverride`
+
+Aquí viene la trampa de por qué se "pierde" y no diferencia los IdPs: **Cada `ApplicationOverride` genera sus propios endpoints independientes.**
+
+Si usas el ID `idAppNauthilusPreIdP`, el endpoint de retorno para este IdP específico ya **no debería ser** el general (`https://app1.testbed.local/Shibboleth.sso/SAML2/POST`). Shibboleth SP espera recibir el POST en una ruta modificada que incluye el ID de la aplicación en la URL de los metadatos.
+
+#### Cómo comprobarlo:
+
+Entra desde fuera a la URL de metadatos específica de tu override:
+`https://app1.testbed.local/Shibboleth.sso/Metadata?resource=idAppNauthilusPreIdP`  
+
+**ESTO NO TENGO CLARO QUE FUNCIONE PQ NO TENEMOS UNA DIRECCION PROPIA PARA EL SP**
+
+Verás que el XML que genera el SP para este caso tendrá unos endpoints ACS indexados o con rutas relativas que le indican a Shibboleth internamente: *"Oye, este token que entra por aquí pertenece a la aplicación idAppNauthilusPreIdP"*.
+
+> ⚠️ **Tu mina de oro:** Si en los metadatos que le diste al IdP de Nauthilus pusiste a mano el ACS a secas (`/SAML2/POST`), cuando el IdP responde, el SP procesa la petición con el contexto **`default`** (general), ignorando por completo el `ShibRequestSetting applicationId` que pusiste en Apache. **Debes importar en el IdP de Nauthilus los metadatos que genera el parámetro `?resource=idAppNauthilusPreIdP`.**
+
+/Users/agomez/root/agomez/saml/gh-docker-saml-stack/gh-sp-shibboleth/etc-httpd/conf.d/sp.conf
+```
+ServerName idptestbed.localhost
+
+<VirtualHost *:80>
+    ServerName https://idptestbed.localhost:443
+    UseCanonicalName On
+    <Location /php-shib-protected/idp-default>
+        AuthType shibboleth
+        ShibRequestSetting requireSession 1
+        ShibRequestSetting applicationId default
+        Require valid-user
+    </Location>
+    <Location /php-shib-protected/idp-nauthilus-preidp>
+        AuthType shibboleth
+        ShibRequestSetting requireSession 1
+        ShibRequestSetting applicationId idAppNauthilusPreIdP
+        Require valid-user
+    </Location>
+</VirtualHost>
+```
+
+/Users/agomez/root/agomez/saml/gh-docker-saml-stack/gh-sp-shibboleth/etc-shibboleth/shibboleth2.xml
+```
+<SPConfig ...">
+
+    <ApplicationDefaults id="default" entityID="https://sprovider.secaas-labs-poc-01.org/shibboleth"
+                         REMOTE_USER="eppn uid persistent-id targeted-id">
+
+        <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true"
+                  cookieProps="https" cookieName="gh-idp-local">
+            <SSO entityID="https://secaas-labs-poc-01.org/idp/shibboleth">
+                SAML2 SAML1
+            </SSO>
+        </Sessions>
+
+        <MetadataProvider type="XML" validate="true" path="idp-default-metadata.xml"/>
+        <ApplicationOverride id="idAppNauthilusPreIdP" REMOTE_USER="eppn uid persistent-id targeted-id">
+            <Sessions lifetime="28800" timeout="3600" relayState="cookie" checkAddress="false" handlerSSL="true"
+                      cookieProps="https"
+                      cookieName="gh-nauthilus-preidp">
+                <SSO entityID="https://preidp.work.global.platform.bbva.com/idp/metadata">
+                    SAML2 SAML1
+                </SSO>
+                <Logout>SAML2 Local</Logout>
+            </Sessions>
+            <MetadataProvider type="XML" validate="true" path="idp-nauthilus-preidp-metadata.xml"/>
+        </ApplicationOverride>
+    </ApplicationDefaults>
+</SPConfig>
+```
+
+## Pq funciona en SimpleSAMLPHP y no en Shibboleth?
+
+**SimpleSAMLphp** es mucho más flexible y "relajado" en ese aspecto. Cuando inicia una petición, guarda en la sesión del navegador (o en su base de datos/memoria) un identificador único del tipo `_saml_auth_source...`. Cuando el IdP responde haciendo un POST al ACS común, SimpleSAMLphp abre la cookie de sesión del cliente, ve el hilo de dónde venía el usuario y reconstruye el contexto dinámicamente. Para él, la URL de destino da igual mientras la cookie esté viva.
+
+**Shibboleth SP**, en cambio, es un motor nativo en C++ hiperestricto y con mentalidad de arquitectura multi-tenancy (para alojar cientos de aplicaciones virtuales independientes en un mismo servidor corporativo).
+
+Shibboleth **no se fía de las cookies** para determinar a qué aplicación pertenece un token SAML entrante por dos razones:
+
+1. **Seguridad:** Evita que una aplicación virtual maliciosa en el mismo servidor pueda interceptar o pisar las sesiones de otra manipulando cookies en el cliente.
+2. **Autenticación iniciada por el IdP (IdP-Initiated SSO):** Shibboleth está preparado para recibir un login que tú no has pedido (el usuario va primero a su panel del IdP, pincha en tu aplicación y el IdP le lanza un POST directo a tu ACS). En ese escenario **no existe ninguna cookie previa** en el navegador. Si Shibboleth dependiera de la cookie para saber qué aplicación procesa el token, el flujo fallaría de inmediato.
+
+---
+
+### La solución definitiva para mantener el ACS común
+
+Si por requisitos de tu infraestructura (o porque no puedes cambiar los metadatos en el IdP de Nauthilus) **te obligan a usar exactamente la URL común** `/Shibboleth.sso/SAML2/POST` sin parámetros ni rutas extrañas, tienes que cambiar de estrategia. No uses `ApplicationOverride` para separar los IdPs.
+
+La forma correcta en Shibboleth de gestionar múltiples IdPs bajo un mismo ACS común sin que se pierda es tratarlos a todos dentro de la aplicación **`default`**, delegando el enrutamiento al inicio del flujo:
+
+1. **Mantén todo en `default`:** Borra el `<ApplicationOverride>` y pon los metadatos de Nauthilus junto a los demás IdPs en el bloque general de `shibboleth2.xml`.
+2. **Usa `relayState="cookie"` en `default`:** Al hacer esto, la cookie general se encargará de recordar a dónde enviar al usuario *después* de que el ACS común valide el token.
+3. **Diferencia en el botón de login:** En tu pantalla o lógica de Apache, si el usuario quiere ir a Nauthilus, mándalo al login forzando su `entityID`:
+
+```html
+/Shibboleth.sso/Login?entityID=https://nauthilus-pre.idp.local/idp/shibboleth&target=/secure/nauthilus
+```
+
+De esta manera, el ACS común recibe el POST, busca el emisor (`Issuer`) en la lista global de metadatos del `default`, valida la firma con éxito y luego lee la cookie de relay para redirigir al usuario a la subcarpeta `/secure/nauthilus`. Al final consigues el mismo aislamiento en tu aplicación, pero jugando bajo las estrictas reglas de Shibboleth.
+
 # Creando certificado para IDP
 
-idptest.cnf 
-[req]
+idptest.cnf
+```[req]
 default_bits=2048
 prompt=no
 default_md=sha256
@@ -21,7 +132,7 @@ subjectAltName=@alt_names
 DNS.0=gh-idptestbed
 URI.0=https://secaas-labs-poc-01.org/idp/shibboleth
 DNS.1=*.gh-idptestbed.com
-URI.1=email2@gh-idptestbed.com
+URI.1=email2@gh-idptestbed.com```
 
 
 % openssl req -new -x509 -newkey rsa:2048 -sha256 -nodes -keyout idp-encryption-key.pem -days 3560 -out idp-encryption-cert.pem -config idptest.cnf
