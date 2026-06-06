@@ -25,7 +25,8 @@ fi
 COMPOSE_FILE="${BASE_DIR}/${COMPOSE_FILENAME}"
 
 echo -e "${GREEN}[🔧] Compilando absolutamente todo el árbol de dependencias...${NC}\n"
-docker compose -f "$COMPOSE_FILE" build gh-saml-sp-shibboleth gh-saml-sp-simplesamlphp
+docker compose -f "$COMPOSE_FILE" build gh-saml-sp-simplesamlphp
+docker compose -f "$COMPOSE_FILE" build gh-saml-sp-shibboleth
 
 # 5. Levantar el entorno descargando capas frescas y forzando la construcción
 echo -e "\n${GREEN}Levantando el entorno desde cero (Pull & Build)...${NC}"

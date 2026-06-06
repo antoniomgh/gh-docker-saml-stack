@@ -1,29 +1,64 @@
-# LDIF file to add organizational unit "ou=people" under "dc=idptestbed"
-dn: ou=People,dc=idptestbed,dc=localhost
+# LDIF file to add organizational unit "ou=people" under "dc=ghsamlstack,dc=localhost"
+dn: ou=People,{{ LDAP_BASE_DN }}
 objectClass: top
 objectClass: organizationalUnit
 ou: People
 
-dn: uid=student1,ou=People,dc=idptestbed,dc=localhost
-objectClass: organizationalPerson
-objectClass: person
+dn: uid=student1,ou=People,{{ LDAP_BASE_DN }}
 objectClass: top
+objectClass: person
+objectClass: organizationalPerson
 objectClass: inetOrgPerson
-uid: student1
 cn: cnstudent1
 sn: Ent
-givenName: Stud
-mail: student1@idptestbed.edu
 userPassword: password
+displayName: Stud Ent
+givenName: Stud
+mail: student1@ghsamlstack.com
+uid: student1
+mobile: +34 667 889 444
+homePhone: +34 667 889 999
+telephoneNumber: +34 667 889 001
+employeeType: contractor
+employeeType: accenture
 
-dn: uid=staff1,ou=People,dc=idptestbed,dc=localhost
+dn: uid=staff1,ou=People,{{ LDAP_BASE_DN }}
 objectClass: organizationalPerson
 objectClass: person
 objectClass: top
 objectClass: inetOrgPerson
-uid: staff1
 cn: St aff
 sn: aff
-givenName: St
-mail: staff1@idptestbed.edu
 userPassword: password
+displayName: St Aff
+givenName: St
+mail: staff1@ghsamlstack.com
+uid: staff1
+mobile: +34 667 889 111
+homePhone: +34 667 889 999
+telephoneNumber: +34 667 889 001
+employeeType: bbva
+employeeType: bbva-tech
+employeeType: bbva-i4s
+
+# Define an entry to contain roles:
+dn: ou=roles,{{ LDAP_BASE_DN }}
+objectClass: organizationalUnit
+ou: roles
+
+# Define some roles and their membership:
+dn: cn=designer,ou=roles,{{ LDAP_BASE_DN }}
+objectClass: groupOfUniqueNames
+uniqueMember: uid=staff1,ou=People,{{ LDAP_BASE_DN }}
+cn: designer
+
+dn: cn=developer,ou=roles,{{ LDAP_BASE_DN }}
+objectClass: groupOfUniqueNames
+uniqueMember: uid=staff1,ou=People,{{ LDAP_BASE_DN }}
+uniqueMember: uid=student1,ou=People,{{ LDAP_BASE_DN }}
+cn: developer
+
+dn: cn=tester,ou=roles,{{ LDAP_BASE_DN }}
+objectClass: groupOfUniqueNames
+uniqueMember: uid=student1,ou=People,{{ LDAP_BASE_DN }}
+cn: tester

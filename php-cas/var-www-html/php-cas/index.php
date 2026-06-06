@@ -32,6 +32,10 @@ phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 // on the CAS server and uncomment the line below
 // phpCAS::setCasServerCACert($cas_server_ca_cert_path);
 
+// Sirve para fijar a fuego la URL exacta a la que el servidor CAS (en tu caso, Shibboleth) debe redirigir
+// al usuario tras loguearse.
+// phpCAS::setFixedServiceURL('https://cas.ghsamlstack.localhost/php-cas/');
+
 // For quick testing you can disable SSL validation of the CAS server.
 // THIS SETTING IS NOT RECOMMENDED FOR PRODUCTION.
 // VALIDATING THE CAS SERVER IS CRUCIAL TO THE SECURITY OF THE CAS PROTOCOL!
@@ -59,7 +63,7 @@ if (isset($_REQUEST['logout'])) {
 
     <p>the user's login is <b><?php echo phpCAS::getUser(); ?></b>.</p>
     <p>phpCAS version is <b><?php echo phpCAS::getVersion(); ?></b>.</p>
-    <p><a href="/">Main Menu</a></p>
+    <p><a href="https://ghsamlstack.localhost/">Main Menu</a></p>
 
     <h3>User Attributes</h3>
     <ul>
