@@ -1,4 +1,4 @@
-# LDIF file to add organizational unit "ou=people" under "dc=idptestbed,dc=localhost"
+# LDIF file to add organizational unit "ou=people" under "dc=ghsamlstack,dc=localhost"
 dn: ou=People,{{ LDAP_BASE_DN }}
 objectClass: top
 objectClass: organizationalUnit
@@ -14,7 +14,7 @@ sn: Ent
 userPassword: password
 displayName: Stud Ent
 givenName: Stud
-mail: student1@idptestbed.edu
+mail: student1@ghsamlstack.com
 uid: student1
 mobile: +34 667 889 444
 homePhone: +34 667 889 999
@@ -32,7 +32,7 @@ sn: aff
 userPassword: password
 displayName: St Aff
 givenName: St
-mail: staff1@idptestbed.edu
+mail: staff1@ghsamlstack.com
 uid: staff1
 mobile: +34 667 889 111
 homePhone: +34 667 889 999

@@ -27,11 +27,11 @@
                       p:authorizedToProxy="true"
                       p:singleLogoutParticipant="true" />
                 -->
+
                 <bean class="net.shibboleth.idp.cas.service.ServiceDefinition"
-                      c:regex="https://idptestbed.localhost/.*"
+                      c:regex="https://cas.ghsamlstack.localhost/.*"
                       p:group="non-proxying-services"
                       p:authorizedToProxy="false"/>
-
             </list>
         </property>
     </bean>

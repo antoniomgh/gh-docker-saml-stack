@@ -22,19 +22,19 @@
             </ds:KeyInfo>
         </md:KeyDescriptor>
         <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-                                Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp"/>
+                                Location="https://sp.simplesamlphp.ghsamlstack.localhost/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp"/>
         <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
+                                     Location="https://sp.simplesamlphp.ghsamlstack.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
                                      index="0"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
-                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp"
+                                     Location="https://sp.simplesamlphp.ghsamlstack.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp"
                                      index="1"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
-                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
+                                     Location="https://sp.simplesamlphp.ghsamlstack.localhost/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp"
                                      index="2"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:artifact-01"
-                                     Location="https://idptestbed.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp/artifact"
+                                     Location="https://sp.simplesamlphp.ghsamlstack.localhost/simplesaml/module.php/saml/sp/saml1-acs.php/default-sp/artifact"
                                      index="3"/>
     </md:SPSSODescriptor>
     <md:ContactPerson contactType="technical">

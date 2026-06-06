@@ -1,45 +1,24 @@
 services:
+
   httpd-proxy:
     container_name: httpd-proxy
     build: ./httpd-proxy/
     networks:
-      - front
-      - back
+      default:
+        aliases:
+          - ghsamlstack.localhost
     ports:
       - "80:80"
       - "443:443"
-
-  idp:
-    container_name: idp
-    platform: linux/amd64
-    build: ./gh-idp-shibboleth-3.4/
-    depends_on:
-      ldap:
-        condition: service_healthy
-    environment:
-      - JETTY_MAX_HEAP=128m
-      - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
-      - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
-    expose:
-      - "4443"
-    networks:
-      - back
-    secrets:
-      - source: idp_backchannel
-      - source: idp_browser
-      - source: idp_sealer
-      - source: idp_encryption_cert
-      - source: idp_encryption_key
-      - source: idp_signing_cert
-      - source: idp_signing_key
 
   ldap:
     image: osixia/openldap:1.5.0
     container_name: ldap
     environment:
-      LDAP_BASE_DN: "dc=idptestbed,dc=localhost"
-      LDAP_ORGANISATION: "Example Organization"
-      LDAP_DOMAIN: "idptestbed.localhost"
+      # LDAP_DOMAIN and LDAP_BASE_DN must match !
+      LDAP_DOMAIN: "ghsamlstack.localhost"
+      LDAP_BASE_DN: "dc=ghsamlstack,dc=localhost"
+      LDAP_ORGANISATION: "GH Saml Stack Organization"
       LDAP_ADMIN_PASSWORD: "password"
       LDAP_TLS: "false"             # deactivate TLS for the LDAP server
     healthcheck:
@@ -51,9 +30,9 @@ services:
     volumes:
       - ./resources/ldap/bootstrap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-bootstrap.ldif
     networks:
-      - back
+      - default
     ports:
-      - "389:389"                   # default port for unsecured LDAP
+      - "389"                   # default port for unsecured LDAP
     command: --copy-service --loglevel debug
     restart: unless-stopped
 
@@ -64,7 +43,7 @@ services:
       PHPLDAPADMIN_LDAP_HOSTS: ldap
       PHPLDAPADMIN_HTTPS: "false"   # deactivate HTTPS
     networks:
-      - back
+      - default
     ports:
       - "8081:80"
     restart: unless-stopped
@@ -85,47 +64,103 @@ services:
       context: ./gh-saml-sp-simplesamlphp/
       dockerfile: Dockerfile
     image: gh/saml-sp-simplesamlphp:latest
-    depends_on:
-      - gh-saml-sp-shibboleth
     profiles:
       - builder # Evita que se levante al hacer 'up'
 
-  sp:
-    container_name: sp
-    build:
-      context: ./gh-sp-shibboleth/
-      dockerfile: Dockerfile
-    networks:
-      - back
-    secrets:
-      - source: sp_shibboleth_cert
-      - source: sp_shibboleth_key
-
-  simplesamlphp:
-    container_name: simplesamlphp
+  idp-simplesamlphp:
+    container_name: idp-simplesamlphp
     build:
       context: ./gh-sp-simplesamlphp/
       dockerfile: Dockerfile
+      args:
+        - ROLE_SIMPLESAML=idp
     links:
-      - httpd-proxy:idptestbed.localhost
+      - httpd-proxy:ghsamlstack.localhost
     networks:
-      - back
+      default:
+        aliases:
+          - idp.simplesamlphp.ghsamlstack.localhost
+    ports:
+      - "443"
     secrets:
       - source: sp_simple_cert
       - source: sp_simple_key
 
+  sp-simplesamlphp:
+    container_name: sp-simplesamlphp
+    build:
+      context: ./gh-sp-simplesamlphp/
+      dockerfile: Dockerfile
+      args:
+        - ROLE_SIMPLESAML=sp
+    links:
+      - httpd-proxy:ghsamlstack.localhost
+    networks:
+      default:
+        aliases:
+          - sp.simplesamlphp.ghsamlstack.localhost
+    ports:
+      - "443"
+    secrets:
+      - source: sp_simple_cert
+      - source: sp_simple_key
+
+  idp-shibboleth:
+    container_name: idp-shibboleth
+    platform: linux/amd64
+    build: ./gh-idp-shibboleth-3.4/
+    depends_on:
+      ldap:
+        condition: service_healthy
+    environment:
+      - JETTY_MAX_HEAP=128m
+      - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
+      - JETTY_BACKCHANNEL_SSL_KEYSTORE_PASSWORD=password
+    expose:
+      - "4443"
+    networks:
+      default:
+        aliases:
+          - idp.shibboleth.ghsamlstack.localhost
+    secrets:
+      - source: idp_backchannel
+      - source: idp_browser
+      - source: idp_sealer
+      - source: idp_encryption_cert
+      - source: idp_encryption_key
+      - source: idp_signing_cert
+      - source: idp_signing_key
+
+  sp-shibboleth:
+    container_name: sp-shibboleth
+    build:
+      context: ./gh-sp-shibboleth/
+      dockerfile: Dockerfile
+    networks:
+      default:
+        aliases:
+          - sp.shibboleth.ghsamlstack.localhost
+    ports:
+      - "80"
+    secrets:
+      - source: sp_shibboleth_cert
+      - source: sp_shibboleth_key
+
   php-cas:
     container_name: php-cas
+    extra_hosts:
+      - "idp.shibboleth.ghsamlstack.localhost:host-gateway"
     build: ./php-cas/
     links:
-      - httpd-proxy:idptestbed.localhost
+      - httpd-proxy:ghsamlstack.localhost
     networks:
-      - back
+      default:
+        aliases:
+          - cas.ghsamlstack.localhost
 
 networks:
-  front:
-    driver: bridge
-  back:
+  default:
+    name: gh_devel
     driver: bridge
 
 secrets:
