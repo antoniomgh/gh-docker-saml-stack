@@ -88,10 +88,13 @@
     <ApplicationDefaults entityID="https://sprovider.secaas-labs-poc-01.org/shibboleth"
                          REMOTE_USER="eppn uid persistent-id targeted-id">
 
+        <!--
         <Sessions lifetime="28800" timeout="3600" relayState="cookie" checkAddress="false" handlerSSL="true"
                   cookieProps="https" cookieName="gh-spshibboleth-multi-idp-session">
+                  -->
+        <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true" cookieProps="https">
 
-            <SSO>
+            <SSO entityID="https://secaas-labs-poc-01.org/idp/shibboleth" ecp="true">
               SAML2 SAML1
             </SSO>
 
@@ -124,7 +127,9 @@
         -->
 
         <MetadataProvider type="XML" validate="true" path="idp-default-metadata.xml"/>
+        <!--
         <MetadataProvider type="XML" validate="true" path="idp-nauthilus-preidp-metadata.xml"/>
+        -->
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>

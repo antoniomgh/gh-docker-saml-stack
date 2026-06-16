@@ -98,7 +98,8 @@
                              Location="https://idp.shibboleth.ghsamlstack.localhost/idp/profile/SAML2/POST-SimpleSign/SSO"/>
         <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                              Location="https://idp.shibboleth.ghsamlstack.localhost/idp/profile/SAML2/Redirect/SSO"/>
-
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+                             Location="https://idp.shibboleth.ghsamlstack.localhost/idp/profile/SAML2/SOAP/ECP"/>
     </IDPSSODescriptor>
 
 

@@ -7,6 +7,10 @@ services:
       default:
         aliases:
           - ghsamlstack.localhost
+    volumes:
+      - ./resources/certificates/ghsamlstack.localhost.cert.pem:/etc/httpd/ssl/server.cert.pem
+      - ./resources/certificates/ghsamlstack.localhost.key.pem:/etc/httpd/ssl/server.key.pem
+      - ./resources/certificates/ca-chain.cert.pem:/etc/httpd/ssl/ca-chain.cert.pem
     ports:
       - "80:80"
       - "443:443"
@@ -59,18 +63,18 @@ services:
     profiles:
       - builder # Evita que se levante al hacer 'up'
 
-  gh-saml-sp-simplesamlphp:
+  gh-saml-simplesamlphp:
     build:
-      context: ./gh-saml-sp-simplesamlphp/
+      context: ./gh-saml-simplesamlphp/
       dockerfile: Dockerfile
-    image: gh/saml-sp-simplesamlphp:latest
+    image: gh/saml-simplesamlphp:latest
     profiles:
       - builder # Evita que se levante al hacer 'up'
 
   idp-simplesamlphp:
     container_name: idp-simplesamlphp
     build:
-      context: ./gh-sp-simplesamlphp/
+      context: ./gh-simplesamlphp/
       dockerfile: Dockerfile
       args:
         - ROLE_SIMPLESAML=idp
@@ -81,7 +85,7 @@ services:
         aliases:
           - idp.simplesamlphp.ghsamlstack.localhost
     ports:
-      - "443"
+      - "80"
     secrets:
       - source: sp_simple_cert
       - source: sp_simple_key
@@ -89,7 +93,7 @@ services:
   sp-simplesamlphp:
     container_name: sp-simplesamlphp
     build:
-      context: ./gh-sp-simplesamlphp/
+      context: ./gh-simplesamlphp/
       dockerfile: Dockerfile
       args:
         - ROLE_SIMPLESAML=sp
@@ -100,7 +104,7 @@ services:
         aliases:
           - sp.simplesamlphp.ghsamlstack.localhost
     ports:
-      - "443"
+      - "80"
     secrets:
       - source: sp_simple_cert
       - source: sp_simple_key
@@ -157,6 +161,8 @@ services:
       default:
         aliases:
           - cas.ghsamlstack.localhost
+    ports:
+      - "80"
 
 networks:
   default:
@@ -175,7 +181,8 @@ secrets:
   idp_backchannel:
     file: ./secrets/idp/idp-backchannel.p12
   idp_browser:
-    file: ./secrets/idp/idp-browser.p12
+    #file: ./secrets/idp/idp-browser.original.p12
+    file: ./secrets/idp/idp-browser.gh.p12
   idp_sealer:
     file: ./secrets/idp/sealer.jks
 

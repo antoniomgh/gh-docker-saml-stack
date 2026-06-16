@@ -1,3 +1,6 @@
+
+Hacer qie mno usen https o que lo poeudasn valiar con una ca
+Cambiar certificado del idp de shibboleth y el del CAS
 # GH SAML Stack
 
 Stack completemo de SAML con docker compose, que incluye:

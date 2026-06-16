@@ -9,6 +9,6 @@ if [ ! -z "$1" ]; then
   COMPOSE_FILENAME="docker-compose.r$1.yml"
 fi
 
-docker compose -f "$COMPOSE_FILENAME" build gh-saml-sp-simplesamlphp
+docker compose -f "$COMPOSE_FILENAME" build gh-saml-simplesamlphp
 docker compose -f "$COMPOSE_FILENAME" build gh-saml-sp-shibboleth
 docker compose -f "$COMPOSE_FILENAME" up --build --force-recreate
