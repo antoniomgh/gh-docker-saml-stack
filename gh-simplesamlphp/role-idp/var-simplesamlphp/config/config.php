@@ -121,8 +121,7 @@ $config = array(
      * Options: [syslog,file,errorlog]
      *
      */
-    /* 'logging.level' => SimpleSAML_Logger::NOTICE, */
-    'logging.level' => SimpleSAML_Logger::INFO,
+    'logging.level' => SimpleSAML_Logger::NOTICE,
     'logging.handler' => 'syslog',
 
     /*
@@ -859,29 +858,24 @@ $config = array(
 
 );
 
-SimpleSAML_Logger::info("🐳 [xxxxxxxxxx.PHP]");
-# SimpleSAML_Logger::info("🐳 [xxxxxxxxxx.PHP] El contenedor ha arrancado detectando el HOST: " . $_SERVER['HTTP_HOST']);
+# Reverse Proxy HTTPS Detection
+# Dynamic baseurlpath configuration for reverse proxy with HTTPS
 
-## print("[xxxxxxxx] aaaaaa");
-## print_r($_SERVER);
-##
-## $protocolo = 'https://';
-## $host_externo = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'sp.simplesamlphp.ghsamlstack.localhost';
-##
-## // 2. Engañar al núcleo de PHP para que sepa que estamos bajo HTTPS seguro
-## if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-##     $_SERVER['HTTPS'] = 'on';
-##     $_SERVER['SERVER_PORT'] = '443';
-## }
-##
-## $config['baseurlpath'] = $protocolo . $host_externo . '/simplesaml/';
-## $config['proxy.trusted.servers'] = array(
-##         '127.0.0.1',
-##         '172.16.0.0/12',  # Rango por defecto de las redes de Docker Compose
-##         isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1'
-##         );
-## $config['session.cookie.secure'] = true;
-##
-## print("[xxxxxxxx]");
-##
-## print_r($config);
+$protocol = 'https://';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'idp.simplesamlphp.ghsamlstack.localhost';
+$host = $_SERVER['HTTP_HOST'];
+
+# Engañar al núcleo de PHP para que sepa que estamos bajo HTTPS seguro
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = '443';
+}
+
+$config['baseurlpath'] = $protocol . $host . '/simplesaml/';
+$config['proxy.trusted.servers'] = array(
+         '127.0.0.1',
+         '172.16.0.0/12',  # Rango por defecto de las redes de Docker Compose
+         isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1'
+         );
+
+$config['session.cookie.secure'] = true;

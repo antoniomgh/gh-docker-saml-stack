@@ -40,6 +40,11 @@ $metadata['https://secaas-labs-poc-01.org/idp/shibboleth'] = array(
             'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
             'Location' => 'https://idp.shibboleth.ghsamlstack.localhost/idp/profile/SAML2/Redirect/SSO',
         ],
+        # Endpoint para SOAP ECP:
+        [
+            'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:SOAP',
+            'Location' => 'https://idp.shibboleth.ghsamlstack.localhost/idp/profile/SAML2/SOAP/ECP'
+        ],
     ],
     'SingleLogoutService' => [],
     'ArtifactResolutionService' => [

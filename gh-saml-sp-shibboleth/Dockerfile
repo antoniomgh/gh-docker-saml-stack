@@ -17,8 +17,24 @@ ARG VERSION_PHP=7.4.33
 ARG VERSION_HTTPD=2.4.37
 ARG VERSION_SHIBBOLETH=3.5.2-1.el8
 
+## BEGIN: SSL Use ##########################
+#
+# RUN dnf module enable -y php:7.4 \
+#     && dnf install -y openssl mod_ssl shibboleth-$VERSION_SHIBBOLETH httpd-$VERSION_HTTPD php-$VERSION_PHP \
+#     && dnf clean all \
+#     && rm -rf /var/cache/yum
+#
+# RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+#     -keyout /etc/pki/tls/private/localhost.key \
+#     -out /etc/pki/tls/certs/localhost.crt \
+#    -subj "/C=ES/ST=Madrid/L=Alcorcon/O=IT/CN=localhost"
+#
+# EXPOSE 80 443
+#
+## END: SSL Use ##########################
+
 RUN dnf module enable -y php:7.4 \
-    && dnf install -y openssl mod_ssl shibboleth-$VERSION_SHIBBOLETH httpd-$VERSION_HTTPD php-$VERSION_PHP \
+    && dnf install -y shibboleth-$VERSION_SHIBBOLETH httpd-$VERSION_HTTPD php-$VERSION_PHP \
     && dnf clean all \
     && rm -rf /var/cache/yum
 
@@ -33,13 +49,8 @@ RUN find /etc/httpd/ -name "*.conf" -exec sed -i \
     -e 's|TransferLog [^/].*|TransferLog /dev/stdout|g' \
     {} +
 
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout /etc/pki/tls/private/localhost.key \
-    -out /etc/pki/tls/certs/localhost.crt \
-    -subj "/C=ES/ST=Madrid/L=Alcorcon/O=IT/CN=localhost"
-
 COPY entrypoint /usr/local/bin/
 
-EXPOSE 80 443
+EXPOSE 80
 
 CMD ["entrypoint"]

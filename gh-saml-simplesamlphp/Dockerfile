@@ -33,6 +33,8 @@ RUN echo $'\nSetEnv SIMPLESAMLPHP_CONFIG_DIR /var/simplesamlphp/config\nAlias /s
 
 COPY httpd-foreground /usr/local/bin/
 
+# a pesar de exponer el 443 si no se añade el Listen con ese puerto (a través de mod_ssl por ejemplo) no tendrá efecto
+
 EXPOSE 80 443
 
 CMD ["httpd-foreground"]

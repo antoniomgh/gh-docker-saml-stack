@@ -34,8 +34,18 @@ RUN sed -i s/mirrorlist.centos.org/vault.centos.org/ ${repo_file}
 RUN sed -i s/mirror.centos.org/vault.centos.org/ ${repo_file}
 RUN yum clean all
 
+## BEGIN: SSL Use ##########################
+#
+# RUN yum -y update \
+#    && yum -y install httpd mod_ssl php php-pear php-xml php-pdo wget \
+#    && yum -y clean all
+#
+# EXPOSE 80 443
+#
+## END: SSL Use ##########################
+
 RUN yum -y update \
-    && yum -y install httpd mod_ssl php php-pear php-xml php-pdo wget \
+    && yum -y install httpd php php-pear php-xml php-pdo wget \
     && yum -y clean all
 
 COPY --from=stage /apereo/phpCAS/utils/dist/CAS-1.3.4.tgz /
@@ -60,6 +70,6 @@ RUN find /etc/httpd/ -name "*.conf" -exec sed -i \
 
 RUN chmod +x /usr/local/bin/httpd-foreground
 
-EXPOSE 80 443
+EXPOSE 80
 
 CMD ["httpd-foreground"]
