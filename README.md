@@ -23,6 +23,7 @@ Stack completemo de SAML con docker compose, que incluye:
 * sp.simplesamlphp.ghsamlstack.localhost
 * idp.simplesamlphp.ghsamlstack.localhost
 * sp.shibboleth.ghsamlstack.localhost
+* spidps.shibboleth.ghsamlstack.localhost
 * idp.shibboleth.ghsamlstack.localhost
 * cas.ghsamlstack.localhost
 
@@ -160,7 +161,7 @@ Used to validate the following Unicon docker images:
 
 # Items
 
-## 1. El idp de shibboleth se cmonta sobre la carpeta /idp
+## 1. El idp de shibboleth se monta sobre la carpeta /idp
 
 **Sí, correcto.** La imagen clásica `unicon/shibboleth-idp` (y prácticamente cualquier despliegue estándar de Shibboleth IdP v3 o v4) despliega y sirve el Identity Provider utilizando la ruta base u operador de contexto **`/idp`**.
 
@@ -238,7 +239,7 @@ ServerName ghsamlstack.localhost
 ```
 <SPConfig ...">
 
-    <ApplicationDefaults id="default" entityID="https://sprovider.secaas-labs-poc-01.org/shibboleth"
+    <ApplicationDefaults id="default" entityID="https://sprovider.secaas-labs-poc-01.org/spidps/shibboleth"
                          REMOTE_USER="eppn uid persistent-id targeted-id">
 
         <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true"
@@ -293,7 +294,7 @@ La forma correcta en Shibboleth de gestionar múltiples IdPs bajo un mismo ACS c
 
 De esta manera, el ACS común recibe el POST, busca el emisor (`Issuer`) en la lista global de metadatos del `default`, valida la firma con éxito y luego lee la cookie de relay para redirigir al usuario a la subcarpeta `/secure/nauthilus`. Al final consigues el mismo aislamiento en tu aplicación, pero jugando bajo las estrictas reglas de Shibboleth.
 
-## 3. Certificads
+## 3. Certificados
 
 Hemos creado una CA root y CA intermedia propias a traves del proyecto https://github.com/antoniomgh/gh-openssl-certificates
 
@@ -306,3 +307,151 @@ Aceptar CA:
     sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ca.cert.pem
 
 ![Texto alternativo](gh-ca-trust.png)
+
+
+### Certificado IDP Shibboleth
+
+La password del certificado viene definida en el `docker-compose.yml`, en la variable de entorno `JETTY_BROWSER_SSL_KEYSTORE_PASSWORD` del servicio `idp-shibboleth`. Por defecto el valor es `itsasecret`. En nuestro caso es `password`.
+
+El certificado en sí en nuestro caso viene definido por el secret `idp_browser`, que especifica el archivo `./secrets/idp/idp-browser.p12`
+
+```yaml
+idp-shibboleth:
+  container_name: idp-shibboleth
+  platform: linux/amd64
+  build: ./gh-idp-shibboleth-3.4/
+  depends_on:
+    ldap:
+    condition: service_healthy
+  environment:
+    - JETTY_MAX_HEAP=128m
+    - JETTY_BROWSER_SSL_KEYSTORE_PASSWORD=password
+  secrets:
+    - source: idp_backchannel
+    - source: idp_browser
+    - source: idp_sealer
+
+secrets:
+  idp_browser:
+    file: ./secrets/idp/idp-browser.p12
+```
+
+**./gh-idp-shibboleth-3.4/shib-jetty-base/start.d/ssl.ini**
+```
+--module=ssl
+jetty.ssl.port=4443
+jetty.sslContext.keyStorePath=/run/secrets/idp_browser
+jetty.sslContext.keyStoreType=PKCS12
+```
+
+Es un archivo **p12** que  podemos ver desde nuestro terminal, pero utilizando el flag `-legacy` ya que es muy antiguo: 
+
+__Exportamos certificado y clave privada__
+
+```shell
+% openssl pkcs12 -legacy -in ./secrets/idp/idp-browser.p12 -passin pass:password -clcerts -nokeys -nomacver -out idp.cert.pem
+% openssl pkcs12 -legacy -in ./secrets/idp/idp-browser.p12 -passin pass:password -nocerts -nodes -out idp.key.pem
+% openssl x509 -noout -text -in idp.cert.pem
+    Certificate:
+        Data:
+            Version: 3 (0x2)
+            Serial Number:
+                a7:2a:eb:d9:fc:47:90:fe
+            Signature Algorithm: sha1WithRSAEncryption
+            Issuer: CN=idp.ccc.local
+            Validity
+                Not Before: Nov 20 02:16:24 2015 GMT
+                Not After : Apr  6 02:16:24 2044 GMT
+            Subject: CN=idp.ccc.local
+            Subject Public Key Info:
+                Public Key Algorithm: rsaEncryption
+                    Public-Key: (2048 bit)
+                    Modulus:
+                        00:be:...
+                    Exponent: 65537 (0x10001)
+            X509v3 extensions:
+                X509v3 Subject Key Identifier: 
+                    D6:02:2E:55:36:5D:1B:F0:06:A2:CF:3E:FB:03:14:07:39:AB:70:AA
+                X509v3 Authority Key Identifier: 
+                    keyid:D6:02:2E:55:36:5D:1B:F0:06:A2:CF:3E:FB:03:14:07:39:AB:70:AA
+                    DirName:/CN=idp.ccc.local
+                    serial:A7:2A:EB:D9:FC:47:90:FE
+                X509v3 Basic Constraints: 
+                    CA:TRUE
+        Signature Algorithm: sha1WithRSAEncryption
+        Signature Value:
+            0a:45:...
+% cat idp.key.pem 
+    Bag Attributes
+        friendlyName: myAlias
+        localKeyID: BE 42 60 64 E2 5E 81 97 C7 64 3B 4D B1 8D 41 85 C7 86 FE 21 
+    Key Attributes: <No Attributes>
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC+MgTlvRf9O3ss
+    ...3lM/1fDFJ3AR5zr9JNc2Q38=
+    -----END PRIVATE KEY-----
+```
+
+También lo podríamos ver desde el contenedor:
+
+```shell
+% docker exec -it idp-shibboleth /bin/bash
+[root@9c0ce4b64614 /]# su -
+[root@9c0ce4b64614 ~]# yum install -y openssl
+[root@9c0ce4b64614 ~]# openssl pkcs12 -in /run/secrets/idp_browser
+    Enter Import Password:
+    MAC verified OK
+    Bag Attributes
+        localKeyID: 44 AD 3B 7F 28 1E 13 1E D9 F5 D4 89 4E 92 77 10 B2 A5 A4 BC 
+    subject=/C=ES/ST=Madrid/L=Alcorcon/O=GH Development Ltd/OU=IT/CN=ghsamlstack.localhost/emailAddress=antoniomgh@gmail.com
+    issuer=/C=ES/ST=Madrid/O=GH Development Ltd/OU=IT/CN=GH Development Intermediate CA/emailAddress=antoniomgh@gmail.com
+    -----BEGIN CERTIFICATE-----
+    MIIGajCCBVKgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgZYxCzAJBgNVBAYTAkVT
+    xqa6CFdhr3zW9Ngb310WyeKI7yBbPCuaKFxpi17Y4pVnABwTi6AiIXvlmqQsteyj
+    SzmUUD//vxeSlyGXAu0=
+    -----END CERTIFICATE-----
+    Bag Attributes
+        localKeyID: 44 AD 3B 7F 28 1E 13 1E D9 F5 D4 89 4E 92 77 10 B2 A5 A4 BC 
+[root@9c0ce4b64614 ~]#
+```
+Lo volvemos a pasar a p12, que no se nos olvide el flag legacy:
+
+```bash
+openssl pkcs12 -legacy -export \
+  -inkey idp.key.pem \
+  -in idp.cert.pem \
+  -out idp-browser.p12 \
+  -passout pass:password
+```
+
+Del mismo modo, si lo trasladamos a nuestro certificado generico...
+
+```bash
+openssl pkcs12 -legacy -export \
+  -in ./resources/certificates/ghsamlstack.localhost.cert.pem \
+  -inkey ./resources/certificates/ghsamlstack.localhost.key.pem \
+  -out ./secrets/idp/idp-browser.p12 \
+  -passout pass:password
+```
+
+Aki, verificar se está siendo servido nuestro cert y lo podemos validar. Desde el browser no ser puede pq enseña el del proxy.
+
+#### Comprobación certificado
+
+% docker exec -it idp-shibboleth /bin/bash
+[root@b74d8a247c79 /]# curl -kv https://idp.shibboleth.ghsamlstack.localhost:4443/
+* About to connect() to idp.shibboleth.ghsamlstack.localhost port 4443 (#0)
+*   Trying 172.18.0.9...
+* Connected to idp.shibboleth.ghsamlstack.localhost (172.18.0.9) port 4443 (#0)
+* Initializing NSS with certpath: sql:/etc/pki/nssdb
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+* Server certificate:
+* 	subject: CN=idp.ccc.local
+* 	start date: Nov 20 02:16:24 2015 GMT
+* 	expire date: Apr 06 02:16:24 2044 GMT
+* 	common name: idp.ccc.local
+* 	issuer: CN=idp.ccc.local
+
+
+================================

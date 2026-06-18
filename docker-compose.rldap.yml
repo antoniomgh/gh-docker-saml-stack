@@ -96,15 +96,15 @@ services:
       - source: idp_signing_cert
       - source: idp_signing_key
 
-  sp-shibboleth:
-    container_name: sp-shibboleth
+  sp-shibboleth-idps:
+    container_name: sp-shibboleth-idps
     build:
       context: ./gh-sp-shibboleth/
       dockerfile: Dockerfile
     networks:
       default:
         aliases:
-          - sp.shibboleth.ghsamlstack.localhost
+          - spidps.shibboleth.ghsamlstack.localhost
     ports:
       - "80"
     secrets:

@@ -7,7 +7,7 @@
 	?>
 	<p><a href="https://ghsamlstack.localhost/">Main Menu</a></p>
     <br/>
-    <h1>IDP Default</h1>
+    <h1>IDP Shibboleth</h1>
     <h2>Variables de Servidor y Shibboleth</h2>
     <?php
         phpinfo(INFO_VARIABLES);

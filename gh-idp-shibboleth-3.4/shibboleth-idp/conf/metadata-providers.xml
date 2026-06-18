@@ -25,14 +25,18 @@
     <!--                                                                                            -->
     <!-- ========================================================================================== -->
 
-    <MetadataProvider id="TestSP" xsi:type="FilesystemMetadataProvider"
-                      metadataFile="%{idp.home}/metadata/sp-metadata.xml"/>
+
+    <MetadataProvider id="TestSPShibboleth" xsi:type="FilesystemMetadataProvider"
+                      metadataFile="%{idp.home}/metadata/sp-shibboleth-metadata.xml"/>
+
+    <MetadataProvider id="TestSPShibbolethMulti" xsi:type="FilesystemMetadataProvider"
+                      metadataFile="%{idp.home}/metadata/sp-shibboleth-idps-metadata.xml"/>
 
     <MetadataProvider id="TestSimpleSAMLphp" xsi:type="FilesystemMetadataProvider"
-                      metadataFile="%{idp.home}/metadata/ssp-metadata.xml"/>
+                      metadataFile="%{idp.home}/metadata/sp-simplesamlphp-metadata.xml"/>
 
     <MetadataProvider id="TestSimple2SAMLphp" xsi:type="FilesystemMetadataProvider"
-                      metadataFile="%{idp.home}/metadata/ssp2-metadata.xml"/>
+                      metadataFile="%{idp.home}/metadata/sp-simplesamlphp-2-metadata.xml"/>
 
     <!-- Example HTTP metadata provider.  Use this if you want to download
          the metadata from a remote service.

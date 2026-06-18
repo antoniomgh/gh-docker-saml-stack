@@ -150,6 +150,21 @@ services:
       - source: sp_shibboleth_cert
       - source: sp_shibboleth_key
 
+  sp-shibboleth-idps:
+    container_name: sp-shibboleth-idps
+    build:
+      context: ./gh-sp-shibboleth-idps/
+      dockerfile: Dockerfile
+    networks:
+      default:
+        aliases:
+          - spidps.shibboleth.ghsamlstack.localhost
+    ports:
+      - "80"
+    secrets:
+      - source: sp_shibboleth_cert
+      - source: sp_shibboleth_key
+
   php-cas:
     container_name: php-cas
     extra_hosts:
