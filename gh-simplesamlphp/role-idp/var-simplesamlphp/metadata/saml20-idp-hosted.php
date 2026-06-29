@@ -22,6 +22,9 @@ $metadata['https://secaas-labs-poc-01.org/idp/simplesamlphp'] = array(
 	 */
 	'auth' => 'ldap',
 
+	// 🚀 ESTA LÍNEA HABILITA EL SOPORTE ECP
+    'saml20.ecp' => true,
+
 	/*
 	 * WARNING: SHA-1 is disallowed starting January the 1st, 2014.
 	 *

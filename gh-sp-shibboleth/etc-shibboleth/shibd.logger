@@ -18,7 +18,7 @@ log4j.category.OpenSAML.MessageEncoder=DEBUG
 log4j.category.OpenSAML.SecurityPolicyRule=INFO
 log4j.category.XMLTooling.SOAPClient=DEBUG
 # interprocess message remoting
-log4j.category.Shibboleth.Listener=INFO
+log4j.category.Shibboleth.Listener=DEBUG
 # mapping of requests to applicationId
 log4j.category.Shibboleth.RequestMapper=DEBUG
 # high level session cache operations

@@ -1,0 +1,11 @@
+HTTP/1.1 302 Found
+Date: Sun, 21 Jun 2026 23:17:54 GMT
+Server: Apache/2.4.37 (Rocky Linux)
+Expires: Wed, 01 Jan 1997 12:00:00 GMT
+Cache-Control: private,no-store,no-cache,max-age=0
+Location: https://idp.shibboleth.ghsamlstack.localhost/idp/profile/SAML2/Redirect/SSO?SAMLRequest=jZJLb8IwEIT%2FSuR74mBKAIsgUTgUibaI0B56qRxnIVaNnXqdPv59zaOCXlDPHs83O7sjFDvd8Enra7OC9xbQR187bZAfHnLSOsOtQIXciB0g95IXk%2FsFZ0nKG2e9lVaTaIIIzitrptZguwNXgPtQEp5Wi5zU3jfIKcUmwVqVpdXg62Rb7wnohXxLtJVC1xY9Lc4CREv3KEaXj8WaRLOQTRmxp5w9VfUP0yCiIetGaTg5rqBSDmTgFY8kms9y8spYOtx0%2B91B1svEZgiwSdMBK9NB1hVDyaogQ2xhboK78TlhKcviNItZZ826vNPnvZsXEi1PldwqUymzvd5feRQhv1uvl%2FFxymdweJgwCMh4tB%2BHH8DuYi%2FXbcXvMsj4XL2zH6oClyBIITDWosS4sTJOO4l12yCg5xpH9AJ7zNDwh8CZz5ZWK%2FkdTbS2n1MHwkNOOoSOj1%2F%2BHtL4Bw%3D%3D&RelayState=ss%3Amem%3A3c648a4ba9efd43aaab21677138c0396948c1f21ec277074d5f73eec228b4edf
+Content-Length: 849
+Content-Type: text/html; charset=iso-8859-1
+Set-Cookie: _opensaml_req_ss%3Amem%3A3c648a4ba9efd43aaab21677138c0396948c1f21ec277074d5f73eec228b4edf=_2209f3738656af9eef0082b0863a9c2d; path=/; HttpOnly; SameSite=None
+Connection: close
+

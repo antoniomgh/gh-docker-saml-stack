@@ -12,7 +12,17 @@ $metadata['https://secaas-labs-poc-01.org/idp/simplesamlphp'] = array(
 		'en' => 'SimpleSAMLphp IdP',
 	),
 	'description'          => 'Test SimpleSAMLphp IdP.',
-	'SingleSignOnService'  => 'https://idp.simplesamlphp.ghsamlstack.localhost/simplesaml/saml2/idp/SSOService.php',
+	'SingleSignOnService'  => [
+        [
+            'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+            'Location' => 'https://idp.simplesamlphp.ghsamlstack.localhost/simplesaml/saml2/idp/SSOService.php',
+        ],
+        // Endpoint ECP:
+        [
+            'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:SOAP',
+            'Location' => 'https://idp.simplesamlphp.ghsamlstack.localhost/simplesaml/saml2/idp/SSOService.php',
+        ],
+    ],
 	'SingleLogoutService'  => 'https://idp.simplesamlphp.ghsamlstack.localhost/simplesaml/saml2/idp/SingleLogoutService.php',
     'certificate' => '/run/secrets/sp_simple_cert',
 );

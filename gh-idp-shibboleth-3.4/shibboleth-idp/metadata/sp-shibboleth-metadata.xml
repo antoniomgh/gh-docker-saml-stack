@@ -1,8 +1,4 @@
-<!--
-This is example metadata only. Do *NOT* supply it as is without review,
-and do *NOT* provide it in real time to your partners.
- -->
-<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" ID="_bf63813d70b5f63a1d2a3504dca89b5e268be651"
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" ID="_c08f3c8e810305f9ca80431b510d3a29ee484ad2"
                      entityID="https://sprovider.secaas-labs-poc-01.org/sp/shibboleth">
 
     <md:Extensions xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport">
@@ -24,8 +20,7 @@ and do *NOT* provide it in real time to your partners.
         <alg:SigningMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/>
     </md:Extensions>
 
-    <md:SPSSODescriptor
-            protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:1.0:protocol">
+    <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:Extensions>
             <init:RequestInitiator xmlns:init="urn:oasis:names:tc:SAML:profiles:SSO:request-init"
                                    Binding="urn:oasis:names:tc:SAML:profiles:SSO:request-init"
@@ -66,7 +61,8 @@ and do *NOT* provide it in real time to your partners.
             <md:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
         </md:KeyDescriptor>
         <md:ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
-                                      Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/Artifact/SOAP" index="1"/>
+                                      Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/Artifact/SOAP"
+                                      index="1"/>
         <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
                                 Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SLO/SOAP"/>
         <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
@@ -76,18 +72,17 @@ and do *NOT* provide it in real time to your partners.
         <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
                                 Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SLO/Artifact"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/POST" index="1"/>
+                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/POST"
+                                     index="1"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign"
                                      Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/POST-SimpleSign"
                                      index="2"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
-                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/Artifact" index="3"/>
+                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/Artifact"
+                                     index="3"/>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS"
-                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/ECP" index="4"/>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
-                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML/POST" index="5"/>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:artifact-01"
-                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML/Artifact" index="6"/>
+                                     Location="https://sp.shibboleth.ghsamlstack.localhost/Shibboleth.sso/SAML2/ECP"
+                                     index="4"/>
     </md:SPSSODescriptor>
 
 </md:EntityDescriptor>

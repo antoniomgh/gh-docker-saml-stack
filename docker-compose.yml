@@ -71,44 +71,6 @@ services:
     profiles:
       - builder # Evita que se levante al hacer 'up'
 
-  idp-simplesamlphp:
-    container_name: idp-simplesamlphp
-    build:
-      context: ./gh-simplesamlphp/
-      dockerfile: Dockerfile
-      args:
-        - ROLE_SIMPLESAML=idp
-    links:
-      - httpd-proxy:ghsamlstack.localhost
-    networks:
-      default:
-        aliases:
-          - idp.simplesamlphp.ghsamlstack.localhost
-    ports:
-      - "80"
-    secrets:
-      - source: sp_simple_cert
-      - source: sp_simple_key
-
-  sp-simplesamlphp:
-    container_name: sp-simplesamlphp
-    build:
-      context: ./gh-simplesamlphp/
-      dockerfile: Dockerfile
-      args:
-        - ROLE_SIMPLESAML=sp
-    links:
-      - httpd-proxy:ghsamlstack.localhost
-    networks:
-      default:
-        aliases:
-          - sp.simplesamlphp.ghsamlstack.localhost
-    ports:
-      - "80"
-    secrets:
-      - source: sp_simple_cert
-      - source: sp_simple_key
-
   idp-shibboleth:
     container_name: idp-shibboleth
     platform: linux/amd64
